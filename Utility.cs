@@ -97,6 +97,10 @@ namespace Inspectify
         #endregion
 
         #region WPF
+        /// <summary>
+        /// Shows the <see cref="SettingsWindow"/>.
+        /// </summary>
+        /// <returns></returns>
         public bool ShowSettingsWindow()
         {
             SettingsWindow window = new SettingsWindow();

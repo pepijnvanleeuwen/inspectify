@@ -8,8 +8,15 @@ using System.Threading.Tasks;
 
 namespace Inspectify
 {
+    /// <summary>
+    /// Class that allows retrieving installed programs.
+    /// </summary>
     public class InstalledPrograms
     {
+        /// <summary>
+        /// Gets a list of installed programs, based on the available registry views.
+        /// </summary>
+        /// <returns>A list of <see cref="FileInformation"/>, based on the values discovered in the available registry views.</returns>
         public List<FileInformation> GetInstalledPrograms()
         {
             var result = new List<FileInformation>();
@@ -26,6 +33,10 @@ namespace Inspectify
             return result;
         }
 
+        /// <summary>
+        /// Gets a list of installed programs, based on the registry.
+        /// </summary>
+        /// <returns>A list of <see cref="FileInformation"/>, based on the values discovered in the registry.</returns>
         private List<FileInformation> GetInstalledProgramsFromRegistry(RegistryView registryView)
         {
             List<FileInformation> result = new List<FileInformation>();

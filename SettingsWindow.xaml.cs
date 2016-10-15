@@ -19,9 +19,12 @@ namespace Inspectify
     /// </summary>
     public partial class SettingsWindow : Window
     {
+        /// <summary>
+        /// Constructor.
+        /// </summary>
         public SettingsWindow()
         {
-            InitializeComponent();
+            this.InitializeComponent();
         }
     }
 }

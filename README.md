@@ -1,6 +1,8 @@
 # Inspectify
 Spotlight-like (file) search for Windows.
 
+![Animation](http://i.imgur.com/kBcoKw4.gif)
+
 # Installation
 
 * Use `$ git clone github.com/pepijnvanleeuwen/inspectify` to get the latest version;

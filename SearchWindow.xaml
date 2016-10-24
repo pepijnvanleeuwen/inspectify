@@ -17,11 +17,12 @@
         Width="700"
         Deactivated="SearchWindow_Deactivated"
         MouseDown="Window_MouseDown"
+        Loaded="Window_Loaded"
     >
     <Window.Background>
-        <SolidColorBrush Opacity="0.95" Color="{x:Static SystemParameters.WindowGlassColor}"/>
+        <SolidColorBrush Opacity="0.75" Color="{x:Static SystemParameters.WindowGlassColor}"/>
     </Window.Background>
-
+    
     <Window.Resources>
         <local:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </Window.Resources>
@@ -30,7 +31,7 @@
         <CommandBinding Command="{x:Static local:SearchWindow.EscapeCommand}" Executed="EscapeCommand_Executed"/>
         <CommandBinding Command="{x:Static local:SearchWindow.EnterCommand}" Executed="EnterCommand_Executed"/>
     </Window.CommandBindings>
-    
+
     <Grid FocusManager.FocusedElement="{Binding ElementName=searchBox}" Margin="20">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -46,14 +47,14 @@
         <Label Grid.Row="0" Grid.Column="0" Content="&#xE000;" FontSize="24" VerticalContentAlignment="Center" BorderThickness="0" FontFamily="Segoe UI Symbol" Foreground="{Binding AlternativeAccentBrush}" />
 
         <Grid Grid.Row="0" Grid.Column="1" VerticalAlignment="Stretch">
-            <TextBlock Text="Inspectify Search" Visibility="{Binding ElementName=searchBox, Path=Text.IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}}" VerticalAlignment="Stretch" FontSize="22" Padding="4" Foreground="{Binding AlternativeAccentBrush}" Margin="4,0,8,0" Background="Transparent" />
-            <TextBox x:Name="searchBox" VerticalAlignment="Stretch" VerticalContentAlignment="Center" FontSize="22" Text="{Binding SearchQuery, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay, Delay=350}" Padding="4" Foreground="{Binding AlternativeAccentBrush}" Margin="4,0,8,0" Background="Transparent" BorderThickness="0" />
+            <TextBlock Text="Inspectify Search" VerticalAlignment="Center" Visibility="{Binding ElementName=searchBox, Path=Text.IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}}" FontSize="22" Padding="10,4,4,4" Margin="4,0,8,0" Foreground="{Binding AlternativeAccentBrush}" Background="Transparent" />
+            <TextBox x:Name="searchBox" VerticalAlignment="Stretch" VerticalContentAlignment="Center" Text="{Binding SearchQuery, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay, Delay=350}" FontSize="22" Padding="4" Margin="4,0,8,0" Foreground="{Binding AlternativeAccentBrush}" Background="Transparent" BorderThickness="0" />
         </Grid>
 
         <Image Grid.Row="0" Grid.Column="2" Source="{Binding PreferredImage}" VerticalAlignment="Center" Width="32" Height="32" />
 
         <ScrollViewer Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" VerticalScrollBarVisibility="Auto">
-            <ItemsControl Padding="8" Background="{Binding AlternativeAccentBrush}" ItemsSource="{Binding FilesResult, Mode=TwoWay}" Margin="0,12,0,8">
+            <ItemsControl Padding="8" Background="{Binding TransparentAlternativeAccentBrush}" ItemsSource="{Binding FilesResult, Mode=TwoWay}" Margin="0,12,0,8">
                 <ItemsControl.Style>
                     <Style TargetType="{x:Type ItemsControl}">
                         <Style.Triggers>
@@ -66,7 +67,7 @@
                 </ItemsControl.Style>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Grid Margin="0,4">
+                        <Grid Margin="0,0,0,3">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="32" />
                                 <ColumnDefinition Width="*" />

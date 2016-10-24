@@ -28,22 +28,27 @@ namespace Inspectify
     {
         #region General
         /// <summary>
-        /// Gets or sets the PreferredImage dependency property.
+        /// Registers the PreferredImage dependency property.
         /// </summary>
         public static readonly DependencyProperty PreferredImageProperty = DependencyProperty.Register(nameof(PreferredImage), typeof(ImageSource), typeof(SearchWindow));
 
         /// <summary>
-        /// Gets or sets the SearchQuery dependency property.
+        /// Registers the SearchQuery dependency property.
         /// </summary>
         public static readonly DependencyProperty SearchQueryProperty = DependencyProperty.Register(nameof(SearchQuery), typeof(string), typeof(SearchWindow), new PropertyMetadata(new PropertyChangedCallback(SearchQuery_PropertyChanged)));
 
         /// <summary>
-        /// Gets or sets the AlternativeAccentBrush dependency property.
+        /// Registers the AlternativeAccentBrush dependency property.
         /// </summary>
         public static readonly DependencyProperty AlternativeAccentBrushProperty = DependencyProperty.Register(nameof(AlternativeAccentBrush), typeof(Brush), typeof(SearchWindow));
 
         /// <summary>
-        /// Gets or sets the FileInformationCollection dependency property.
+        /// Registers the TransparentAlternativeAccentBrush dependency property.
+        /// </summary>
+        public static readonly DependencyProperty TransparentAlternativeAccentBrushProperty = DependencyProperty.Register(nameof(TransparentAlternativeAccentBrush), typeof(Brush), typeof(SearchWindow));
+
+        /// <summary>
+        /// Registers the the FileInformationCollection dependency property.
         /// </summary>
         public static readonly DependencyProperty FileInformationCollectionProperty = DependencyProperty.Register(nameof(FilesResult), typeof(List<FileInformation>), typeof(SearchWindow));
 
@@ -69,6 +74,7 @@ namespace Inspectify
             this.Files = this.SearchProgramsFiles();
 
             this.DetermineAlternativeAccentBrush();
+            this.DetermineTransparentAlternativeAccentBrush();
 
             EscapeCommand.InputGestures.Add(new KeyGesture(Key.Escape));
             EnterCommand.InputGestures.Add(new KeyGesture(Key.Enter));
@@ -101,6 +107,12 @@ namespace Inspectify
         {
             get { return (Brush)this.GetValue(AlternativeAccentBrushProperty); }
             set { this.SetValue(AlternativeAccentBrushProperty, value); }
+        }
+
+        public Brush TransparentAlternativeAccentBrush
+        {
+            get { return (Brush)this.GetValue(TransparentAlternativeAccentBrushProperty); }
+            set { this.SetValue(TransparentAlternativeAccentBrushProperty, value); }
         }
 
         /// <summary>
@@ -171,6 +183,12 @@ namespace Inspectify
 
             if (!string.IsNullOrEmpty(query))
             {
+                //
+                // Wikipedia search example - work in progress :)
+                //
+                //Modules.WikipediaSearchModule wikipedia = new Modules.WikipediaSearchModule();
+                //wikipedia.RetrieveResultsAsync(query);
+
                 filesResult = this.Files
                               .Where(x => x.DisplayName.Contains(query, StringComparison.CurrentCultureIgnoreCase))
                               .OrderBy(x => x.DisplayName?.Length) // In most cases, the desired application's name is the shortest (e.g. 'Command Prompt' vs 'Developer Command Prompt for VS2015').
@@ -210,7 +228,7 @@ namespace Inspectify
 
                 if (currentAccent != null)
                 {
-                    float correctionFactor = 0.6f;
+                    float correctionFactor = 0.8f;
                     float red = (255 - currentAccent.R) * correctionFactor + currentAccent.R;
                     float green = (255 - currentAccent.G) * correctionFactor + currentAccent.G;
                     float blue = (255 - currentAccent.B) * correctionFactor + currentAccent.B;
@@ -226,6 +244,21 @@ namespace Inspectify
             catch(Exception ex)
             {
                 Utility.Current.HandleException(ex);
+            }
+        }
+
+        private void DetermineTransparentAlternativeAccentBrush()
+        {
+            var accentBrush = this.AlternativeAccentBrush;
+
+            if (accentBrush != null)
+            {
+                byte a = ((Color)accentBrush.GetValue(SolidColorBrush.ColorProperty)).A;
+                byte g = ((Color)accentBrush.GetValue(SolidColorBrush.ColorProperty)).G;
+                byte r = ((Color)accentBrush.GetValue(SolidColorBrush.ColorProperty)).R;
+                byte b = ((Color)accentBrush.GetValue(SolidColorBrush.ColorProperty)).B;
+
+                this.TransparentAlternativeAccentBrush = new SolidColorBrush(Color.FromArgb(0x80, r, g, b));
             }
         }
         #endregion
@@ -352,6 +385,40 @@ namespace Inspectify
             }
         }
 
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            this.EnableBlur();
+        }
+        #endregion
+
+        #region Blur
+        private void EnableBlur()
+        {
+            try
+            {
+                var windowHelper = new WindowInteropHelper(this);
+
+                var accent = new NativeMethods.AccentPolicy();
+                var accentStructSize = Marshal.SizeOf(accent);
+                accent.AccentState = NativeMethods.AccentState.ACCENT_ENABLE_BLURBEHIND;
+
+                var accentPtr = Marshal.AllocHGlobal(accentStructSize);
+                Marshal.StructureToPtr(accent, accentPtr, false);
+
+                var data = new NativeMethods.WindowCompositionAttributeData();
+                data.Attribute = NativeMethods.WindowCompositionAttribute.WCA_ACCENT_POLICY;
+                data.SizeOfData = accentStructSize;
+                data.Data = accentPtr;
+
+                NativeMethods.SetWindowCompositionAttribute(windowHelper.Handle, ref data);
+
+                Marshal.FreeHGlobal(accentPtr);
+            }
+            catch (Exception ex)
+            {
+                Utility.Current.HandleException(ex);
+            }
+        }
         #endregion
 
         #region Interop

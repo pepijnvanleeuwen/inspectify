@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using Squirrel;
 
 namespace Inspectify
 {
@@ -22,8 +23,23 @@ namespace Inspectify
         /// Raises the <see cref="System.Windows.Application.Startup"/> event.
         /// </summary>
         /// <param name="e">A <see cref="System.Windows.StartupEventArgs"/> that contains the event data.</param>
-        protected override void OnStartup(StartupEventArgs e)
+        protected async override void OnStartup(StartupEventArgs e)
         {
+            using (var updateManager = UpdateManager.GitHubUpdateManager("https://github.com/pepijnvanleeuwen/inspectify"))
+            {
+                await Task.Run( () =>
+                              {
+                                  try
+                                  {
+                                      updateManager.Result.UpdateApp();
+                                  }
+                                  catch (Exception ex)
+                                  {
+                                      Utility.Current.HandleException(ex);
+                                  }
+                              });
+            }
+
             base.OnStartup(e);
 
             this.notifyIcon = (TaskbarIcon)FindResource("NotifyIcon");

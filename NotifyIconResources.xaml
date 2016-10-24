@@ -8,14 +8,14 @@
         reuse the same context menu (which is a resource) again (which will have its DataContext set to the old TaskbarIcon)
   -->
     <ContextMenu x:Shared="False" x:Key="TrayMenu">
-        <MenuItem Header="Settings" Command="{Binding OpenSettingsCommand}">
-            <MenuItem.Icon>
-                <Image Width="16" Height="16" Source="Resources/settings_16.png" />
-            </MenuItem.Icon>
-        </MenuItem>
         <MenuItem Header="About Inspectify" Command="{Binding OpenAboutCommand}">
             <MenuItem.Icon>
                 <Image Width="16" Height="16" Source="Resources/icon_16.png" />
+            </MenuItem.Icon>
+        </MenuItem>
+        <MenuItem Header="Settings" Command="{Binding OpenSettingsCommand}">
+            <MenuItem.Icon>
+                <Image Width="16" Height="16" Source="Resources/settings_16.png" />
             </MenuItem.Icon>
         </MenuItem>
         <Separator />

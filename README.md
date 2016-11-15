@@ -1,12 +1,21 @@
 # Inspectify
-Spotlight-like (file) search for Windows.
+Spotlight-like search for Windows.
 
 ![Animation](http://i.imgur.com/kBcoKw4.gif)
 
+# Features
+
+* Inspectify searches the following locations:
+  * Apps that are available on your PC
+  * Local files by using native Windows indices
+  * External search engines, e.g. DuckDuckGo or Wikipedia
+* Inspectify uses your personalised Windows color (and adds a nifty blur effect to the background)
+
 # Installation
 
-* Use `$ git clone github.com/pepijnvanleeuwen/inspectify` to get the latest version;
-* Open the `Inspectify.sln` file with Visual Studio and proceed by building (`CTRL+SHIFT+B`);
-  * Note: required `nuget` packages will be automatically downloaded;
-* When the compilation is completed, run by pressing `F5`;
-* Inspectify will now run in the system tray.
+Either download the [latest release](https://github.com/pepijnvanleeuwen/inspectify/releases/latest) or build it yourself:
+
+1. `$ git clone github.com/pepijnvanleeuwen/inspectify`
+* Open `Inspectify.sln` in Visual Studio
+* Set compile mode to 'Release'.
+* Run `inspectify\bin\Release\Inspectify.exe`

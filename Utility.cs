@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Hardcodet.Wpf.TaskbarNotification;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -38,6 +39,23 @@ namespace Inspectify
                 return current;
             }
         }
+
+        /// <summary>
+        /// Gets or sets a task bar icon.
+        /// </summary>
+        public TaskbarIcon TaskbarIcon
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Gets the name of the application.
+        /// </summary>
+        public string ApplicationName
+        {
+            get { return "Inspectify"; }
+        }
         #endregion
 
         #region Exceptions
@@ -52,15 +70,45 @@ namespace Inspectify
                 Trace.WriteLine("An error occurred:");
                 Trace.WriteLine(ex);
 
-                MessageBox.Show($"An error occurred: {ex}");
+                string title = this.ApplicationName;
+                string message;
+
+                if (ex is AggregateException)
+                {
+                    AggregateException aex = ex as AggregateException;
+
+                    StringBuilder messageBuilder = new StringBuilder();
+
+                    foreach (Exception exception in aex.InnerExceptions)
+                    {
+                        messageBuilder.AppendLine(exception.Message);
+                    }
+
+                    message = messageBuilder.ToString();
+                }
+                else
+                {
+                    message = ex.Message;
+                }
+
+                if (this.TaskbarIcon != null)
+                {
+                    Application.Current.Dispatcher.Invoke( () => TaskbarIcon.ShowBalloonTip($"Inspectify", message, BalloonIcon.Error));
+                }
+                else
+                {
+                    Application.Current.Dispatcher.Invoke( () => new ErrorWindow().Show());
+                }
             }
             catch (Exception hex)
             {
                 //
-                // Attempt to log the original exception and the newly raised exception. When it does happen, something is really wrong.
+                // Attempt to log the original exception and the newly raised exception. When it does happen, something is has gone quite wrong.
                 //
                 Trace.WriteLine(ex);
                 Trace.WriteLine(hex);
+
+                MessageBox.Show($"An error occurred: {hex}.{Environment.NewLine}{Environment.NewLine}Inner exception: {ex}");
             }
         }
         #endregion

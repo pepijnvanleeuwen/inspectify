@@ -67,17 +67,24 @@ namespace Inspectify
         /// </summary>
         public SearchWindow()
         {
-            this.InitializeComponent();
+            try
+            {
+                this.InitializeComponent();
 
-            this.DataContext = this;
+                this.DataContext = this;
 
-            this.Files = this.SearchProgramsFiles();
+                this.Files = this.SearchProgramsFiles();
 
-            this.DetermineAlternativeAccentBrush();
-            this.DetermineTransparentAlternativeAccentBrush();
+                this.DetermineAlternativeAccentBrush();
+                this.DetermineTransparentAlternativeAccentBrush();
 
-            EscapeCommand.InputGestures.Add(new KeyGesture(Key.Escape));
-            EnterCommand.InputGestures.Add(new KeyGesture(Key.Enter));
+                EscapeCommand.InputGestures.Add(new KeyGesture(Key.Escape));
+                EnterCommand.InputGestures.Add(new KeyGesture(Key.Enter));
+            }
+            catch (Exception ex)
+            {
+                Utility.Current.HandleException(ex);
+            }
         }
         #endregion
 
@@ -141,7 +148,7 @@ namespace Inspectify
 
             List<string> paths = new List<string>();
 
-            paths.Add(Environment.GetFolderPath(Environment.SpecialFolder.Programs));
+            paths.Add(Environment.GetFolderPath(Environment.SpecialFolder.StartMenu));
             paths.Add(Environment.GetFolderPath(Environment.SpecialFolder.CommonStartMenu));
 
             foreach (string path in paths)
@@ -168,6 +175,11 @@ namespace Inspectify
                 // Include all files.
                 //
                 extension = "*.*";
+            }
+
+            if (!Directory.Exists(path))
+            {
+                throw new Exception($"Cannot locate the folder '{path}'.");
             }
 
             var files = Directory.EnumerateFiles(path, extension, SearchOption.AllDirectories)

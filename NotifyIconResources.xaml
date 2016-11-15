@@ -27,6 +27,7 @@
     </ContextMenu>
 
     <tb:TaskbarIcon x:Key="NotifyIcon"
+                    x:Name="NotifyIcon"
                     IconSource="Resources/icon_256.ico"
                     ToolTipText="Open Inspectify"
                     LeftClickCommand="{Binding ShowWindowCommand}"
